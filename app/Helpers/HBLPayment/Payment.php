@@ -4,7 +4,7 @@ namespace App\Helpers\HBLPayment;
 
 use Carbon\Carbon;
 // use App\Helpers\SecurityData;
-use App\Helpers\SecurityDataPROD as SecurityData;
+use App\Helpers\SecurityData;
 use App\Helpers\ActionRequest;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -13,6 +13,11 @@ class Payment extends ActionRequest
 {
     private ?string $orderNo = null;
     private ?string $amount = null;
+    private ?string $productDescription = null;
+    private ?string $amountText = null;
+    private ?string $currencyCode = null;
+    private ?string $officeId = null;
+    private ?string $encryptCode = null;
 
     public function __construct($orderNo, $amount, $productDescription, $amountText, $currencyCode, $officeId, $encryptCode)
     {
@@ -23,64 +28,9 @@ class Payment extends ActionRequest
         $this->currencyCode = $currencyCode;
         $this->officeId = $officeId;
         $this->encryptCode = $encryptCode;
-        parent::__construct();
-    }
-    /**
-     * @throws GuzzleException
-     */
-    public function Execute(): string
-    {
-        $now = Carbon::now();
-        
-        $request = [
-            "apiRequest" => [
-                "requestMessageID" => $this->Guid(),
-                "requestDateTime" => $now->utc()->format('Y-m-d\TH:i:s.v\Z'),
-                "language" => "en-US",
-            ],//required
-            "officeId" => "{$this->officeId}",//required😎
-            "orderNo" => "{$this->orderNo}",//required😎
-            "productDescription" => "{$this->productDescription}",//required😎
-            "paymentType" => "CC",//required😎
-            "paymentCategory" => "ECOM",//Optional😎
-            "recurringPaymentDetails" => [
-                "rppFlag" => "N",//required (Y/N)
-            ],//not imp😎
-            "installmentPaymentDetails" => [
-                "ippFlag" => "N",//required (Y/N)
-            ],//defult😎
-            "mcpFlag" => "N",//required (Y/N)😎
-            "request3dsFlag" => "N",//Not imp😎
-            "transactionAmount" => [
-                "amountText" => "{$this->amountText}",
-                "currencyCode" => "{$this->currencyCode}",
-                "decimalPlaces" => 2,
-                "amount" => $this->amount
-            ],//required😎
-            "notificationURLs" => [
-                "confirmationURL" => route('result.success', $this->encryptCode),
-                "failedURL" => route('result.failed'),
-                "cancellationURL" => route('result.cancellation'),
-                "backendURL" => route('pay.hbl.proceed'),
-            ],//required😎
-            "autoRedirectDelayTimer" => 5,//😎
-            "channelCode" => "WEBPAY"//😎
-        ];
-        $stringRequest = json_encode($request);
-        
-        
-        //third-party http client https://github.com/guzzle/guzzle
-        $response = $this->client->post('api/1.0/Payment/prePaymentUI', [
-            'headers' => [
-                'Accept' => 'application/json',
-                'apiKey' => SecurityData::$AccessToken,
-                'Content-Type' => 'application/json'
-            ],
-            'body' => $stringRequest
-        ]);
-        
 
-        return $response->getBody()->getContents();
+        $this->accessToken = config('app.addons.payment_options.hbl')[env('HBL_ENV')]['access_token'][$this->currencyCode];
+        parent::__construct();
     }
 
     /**
@@ -88,12 +38,9 @@ class Payment extends ActionRequest
      * @throws Exception
      */
     public function ExecuteJose()
-    {
+    { 
         $now = Carbon::now();
-        // $orderNo = $this->orderNo;
-        // $amount = round((double)$this->amount,2);
-        // $amount_text = $this->AmountText($amount);
-
+        $access_token = $this->accessToken;
         $request = [
             "apiRequest" => [
                 "requestMessageID" => $this->Guid(),
@@ -115,7 +62,7 @@ class Payment extends ActionRequest
                 "interestType" => null
             ],
             "mcpFlag" => "N",
-            "request3dsFlag" => "N",
+            "request3dsFlag" => "Y",
             "transactionAmount" => [
                 "amountText" => "{$this->amountText}",
                 "currencyCode" => "{$this->currencyCode}",
@@ -156,12 +103,12 @@ class Payment extends ActionRequest
                 ]
             ]
         ];
-
+        
         $payload = [
             "request" => $request,
-            "iss" => SecurityData::$AccessToken,
+            "iss" => $access_token,
             "aud" => "PacoAudience",
-            "CompanyApiKey" => SecurityData::$AccessToken,
+            "CompanyApiKey" => $access_token,
             "iat" => $now->unix(),
             "nbf" => $now->unix(),
             "exp" => $now->addHour()->unix(),
@@ -176,12 +123,11 @@ class Payment extends ActionRequest
         $response = $this->client->post('api/1.0/Payment/prePaymentUI', [
             'headers' => [
                 'Accept' => 'application/jose',
-                'CompanyApiKey' => SecurityData::$AccessToken,
+                'CompanyApiKey' => $access_token,
                 'Content-Type' => 'application/jose; charset=utf-8'
             ],
             'body' => $body
         ]);
-        
         $token = $response->getBody()->getContents();
         $decryptingKey = $this->GetPrivateKey(SecurityData::$MerchantDecryptionPrivateKey);
         $signatureVerificationKey = $this->GetPublicKey(SecurityData::$PacoSigningPublicKey);

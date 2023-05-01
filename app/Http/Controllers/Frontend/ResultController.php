@@ -2,23 +2,40 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Controller;
-use App\Models\PaymentDetail;
-use App\Models\PaymentEntry;
+use Mail;
+use Swift_Mailer;
+use Swift_SmtpTransport;
 use App\Models\PaymentHBL;
-use Illuminate\Http\Request;
+use App\Models\PaymentEntry;
 
 use App\Models\PaymentSetup;
-use Mail;
-use Swift_SmtpTransport;
-use Swift_Mailer;
+use Illuminate\Http\Request;
+use App\Models\PaymentDetail;
+use App\Models\HblPaymentResponse;
 
 
-use Illuminate\Support\Facades\Notification;
+use App\Helpers\HBLPayment\Inquiry;
+use App\Http\Controllers\Controller;
+use App\Models\HblPaymentResultResponse;
 use App\Notifications\SendPaymentErrorLog;
+use Illuminate\Support\Facades\Notification;
 
 class ResultController extends Controller
 {
+    private $response;
+    public function __construct(Request $request)
+    {
+        $has_data = HblPaymentResultResponse::where('order_no', $request->orderNo)->first();
+        if (isset($request->orderNo) and is_null($has_data)) {
+            $order_details = HblPaymentResponse::where('order_no', $request->orderNo)->first();
+            $inquiry = new Inquiry($order_details->currency);
+            $this->response = $inquiry->ExecuteJose(config('app.addons.payment_options.hbl')[env('HBL_ENV')]['merchant_id'], $request->orderNo);
+            if ($this->response) {
+                HblPaymentResultResponse::_save_response($this->response);
+            }
+        }
+    }
+
     public function success($encrypt)
     {
         $check = PaymentSetup::_validating($encrypt);
@@ -37,6 +54,11 @@ class ResultController extends Controller
     public function error($code)
     {
         return view('frontend.result.error', compact('code'));
+    }
+
+    public function cancellation(Request $request)
+    {
+        return view('frontend.result.cancellation');
     }
     
     public function test()

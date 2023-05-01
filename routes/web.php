@@ -81,6 +81,8 @@ Route::namespace('Frontend')->middleware("throttle:1000,15")->group(function () 
     Route::get('/result/error/{code}', 'ResultController@error')->name('result.error');
     Route::get('/result/failed', 'ResultController@failed')->name('result.failed');
     Route::get('/result/test', 'ResultController@test')->name('result.test');
+    Route::any('/result/cancellation', 'ResultController@cancellation')->name('result.cancellation');
+    Route::get('/result/backend', 'ResultController@test')->name('result.backend'); 
 });
 
 Route::namespace('CronJob')->middleware("throttle:100,15")->group(function () {

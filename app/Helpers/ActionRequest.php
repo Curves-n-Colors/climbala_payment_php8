@@ -52,6 +52,8 @@ abstract class ActionRequest
     private JWEBuilder $jweBuilder;
     private JWELoader $jweLoader;
 
+    protected string $accessToken;
+    
     public function __construct()
     {
         $handler = HandlerStack::create();
@@ -102,7 +104,7 @@ abstract class ActionRequest
            $checkers = [
                 new NotBeforeChecker(),
                 new ExpirationTimeChecker(),
-                new AudienceChecker(SecurityData::$AccessToken),
+                new AudienceChecker($this->accessToken),
                 new IssuerChecker(["PacoIssuer"]),
             ]
         );

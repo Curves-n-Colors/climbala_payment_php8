@@ -2,25 +2,28 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use DB;
+use Exception;
+use Carbon\Carbon;
 
-use App\Http\Requests\PayRequest;
-use App\Http\Requests\NiblRequest;
+use App\Models\Logs;
+use App\Models\PayNibl;
 
-use App\Models\PaymentSetup;
-use App\Models\PaymentEntry;
-use App\Models\PaymentDetail;
+use App\Models\PayKhalti;
 use App\Models\PaymentHBL;
 use App\Models\PaymentNibl;
-use App\Models\PaymentKhalti;
+use App\Models\PaymentEntry;
+use App\Models\PaymentSetup;
+use Illuminate\Http\Request;
 
-use App\Models\PayNibl;
-use App\Models\PayKhalti;
-use App\Models\Logs;
+use App\Models\PaymentDetail;
+use App\Models\PaymentKhalti;
+use App\Http\Requests\PayRequest;
+use App\Http\Requests\NiblRequest;
+use App\Models\HblPaymentResponse;
+use App\Helpers\HBLPayment\Payment;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
-use DB;
 
 class PayController extends Controller
 {
@@ -45,18 +48,42 @@ class PayController extends Controller
         $check = PaymentSetup::_validating($encrypt);
         if ($check['status'] == 200) {
             $entry = $check['entry'];
-
             if ($entry) {
                 if ($request->payment_type == 'NIBL') {
                     return $this->nibl_pay($entry, $request);
                 } else if ($request->payment_type == 'KHALTI') {
                     return $this->khalti_pay($entry, $encrypt, $request);
                 } else if ($request->payment_type == 'HBL') {
-                    return $this->hbl_pay($entry, $encrypt, $request);
+                    return $this->hbl_pay_v2($entry, $encrypt, $request);
                 }
             }
         }
         return redirect()->route('result.error', [$check['status']]);
+    }
+
+    public function hbl_pay_v2($entry, $encrypt, $request)
+    {
+        $invoiceNo = str_pad(Carbon::now()->timestamp, 20, 0, STR_PAD_LEFT);
+        $amount = $entry['total'];
+        $title = $entry['title'];
+
+        $pay = new Payment(
+            $orderNo = $invoiceNo,
+            $amount = (int) $amount,
+            $productDescription =  $title,
+            $amountText = str_pad($amount * 100, 12, 0, STR_PAD_LEFT),
+            $currencyCode = $entry['currency'],
+            $officeId = config('app.addons.payment_options.hbl')[env('HBL_ENV')]['merchant_id'],
+            $encryptCode = $encrypt,
+        );
+
+        $response = $pay->ExecuteJose();
+        if ($response) {
+            HblPaymentResponse::_save_response($response, $entry['uuid'], $currencyCode);
+        }
+        $response = json_decode($response, true);
+       
+        return redirect($response['response']['Data']['paymentPage']['paymentPageURL']);
     }
 
     public function nibl_pay($entry, $request)

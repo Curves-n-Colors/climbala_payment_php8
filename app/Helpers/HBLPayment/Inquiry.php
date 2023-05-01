@@ -9,56 +9,18 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class Inquiry extends ActionRequest
 {
-    /**
-     * @throws GuzzleException
-     */
-    public function Execute($officeId, $orderNo): string
+    public function __construct($currencyCode)
     {
-        $now = Carbon::now();
-
-        $request = [
-            "apiRequest" => [
-                "requestMessageID" => $this->Guid(),
-                "requestDateTime" => $now->utc()->format('Y-m-d\TH:i:s.v\Z'),
-                "language" => "en-US",
-            ],
-            "advSearchParams" => [
-                "controllerInternalID" => null,
-                "officeId" => [
-                    $officeId
-                ],
-                "orderNo" => [
-                    "$orderNo"
-                ],
-                "invoiceNo2C2P" => null,
-                "fromDate" => "0001-01-01T00:00:00",
-                "toDate" => "0001-01-01T00:00:00",
-                "amountFrom" => null,
-                "amountTo" => null
-            ],
-        ];
-
-        $stringRequest = json_encode($request);
-
-        //third-party http client https://github.com/guzzle/guzzle
-        $response = $this->client->post('api/1.0/Inquiry/transactionList', [
-            'headers' => [
-                'Accept' => 'application/json',
-                'apiKey' => SecurityData::$AccessToken,
-                'Content-Type' => 'application/json; charset=utf-8'
-            ],
-            'body' => $stringRequest
-        ]);
-
-        return $response->getBody()->getContents();
+        $this->accessToken = config('app.addons.payment_options.hbl')[env('HBL_ENV')]['access_token'][$currencyCode];
+        parent::__construct();
     }
-
     /**
      * @throws GuzzleException
      * @throws Exception
      */
     public function ExecuteJose($officeId, $orderNo): string
     {
+        $access_token = $this->accessToken;
         $now = Carbon::now();
         
         $request = [
@@ -85,9 +47,9 @@ class Inquiry extends ActionRequest
 
         $payload = [
             "request" => $request,
-            "iss" => SecurityData::$AccessToken,
+            "iss" => $access_token,
             "aud" => "PacoAudience",
-            "CompanyApiKey" => SecurityData::$AccessToken,
+            "CompanyApiKey" => $access_token,
             "iat" => $now->unix(),
             "nbf" => $now->unix(),
             "exp" => $now->addHour()->unix(),
@@ -103,7 +65,7 @@ class Inquiry extends ActionRequest
         $response = $this->client->post('api/1.0/Inquiry/transactionList', [
             'headers' => [
                 'Accept' => 'application/jose',
-                'CompanyApiKey' => SecurityData::$AccessToken,
+                'CompanyApiKey' => $access_token,
                 'Content-Type' => 'application/jose; charset=utf-8'
             ],
             'body' => $body
