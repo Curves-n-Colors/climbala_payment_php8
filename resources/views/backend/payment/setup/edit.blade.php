@@ -76,7 +76,7 @@ $payment_opts = ($data->payment_options != '') ? json_decode($data->payment_opti
                         </div>  
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" style="display:none">
                     <div class="col-6">
                         <div class="form-group required form-group-default input-group @error('recurring_type') has-error @enderror">
                             <div class="form-input-group">

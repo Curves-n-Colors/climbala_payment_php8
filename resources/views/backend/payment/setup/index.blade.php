@@ -55,7 +55,6 @@ $recurring_types = config('app.addons.recurring_type');
                                         <th width="50">Client</th>
                                         <th width="50">Amount</th>
                                         <th width="50">Ref Date</th>
-                                        <th width="50">Type</th>
                                         <th width="50">Status</th>
                                         <th width="100">Option</th>
                                     </tr>
@@ -71,7 +70,6 @@ $recurring_types = config('app.addons.recurring_type');
                                             <td>{{ $row->client->name }}<br/>{{ $row->email }}</td>
                                             <td>{{ $row->currency . ' ' . number_format($row->total, 2) }}</td>
                                             <td>{{ $row->reference_date }}</td>
-                                            <td>{{ isset($recurring_types[$row->recurring_type]) ? $recurring_types[$row->recurring_type] : 'N/A' }}</td>
                                             <td>
                                                 @if ($row->is_active == 10)
                                                 <strong class="text-success">ACTIVE</strong>
@@ -96,7 +94,7 @@ $recurring_types = config('app.addons.recurring_type');
                                                 <input type="hidden" data-title="client" value='{{ $row->client->name }}' class="payment-item">
                                                 <input type="hidden" data-title="email" value='{{ $row->email }}' class="payment-item">
                                                 <input type="hidden" data-title="total_amount" value="{{ $row->currency . ' ' . number_format($row->total, 2) }}" class="payment-item">
-                                                <input type="hidden" data-title="recurring_type" value='{{ $recurring_types[$row->recurring_type] }}' class="payment-item">
+                                                {{-- <input type="hidden" data-title="recurring_type" value='{{ $recurring_types[$row->recurring_type] }}' class="payment-item"> --}}
                                                 <input type="hidden" data-title="reference_date" value='{{ $row->reference_date }}' class="payment-item">
                                                 <input type="hidden" data-title="payment_timing" value='{{ $row->is_advance == 10 ? "ADVANCE PAYMENT" : "POST PAYMENT" }}' class="payment-item">
                                                 <input type="hidden" data-title="payment_options" value='{{ $row->payment_options }}' class="payment-item">
