@@ -30,7 +30,7 @@
         </div>
     </div>
 </div>
-@stop
+@endsection
 
 @section('page-specific-style')
 <link rel="stylesheet" href="{{ asset('assets/plugins/select2/select2.min.css') }}"/>

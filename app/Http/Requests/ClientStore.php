@@ -24,8 +24,8 @@ class ClientStore extends FormRequest
     public function rules()
     {
         return [
-            'name'  => 'required|unique:clients,name',
-            'email' => 'required'
+            'name'  => 'required',
+            'email' => 'required|unique:clients,email'
         ];
     }
 }

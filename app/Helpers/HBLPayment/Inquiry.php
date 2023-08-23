@@ -56,8 +56,8 @@ class Inquiry extends ActionRequest
         ];
 
         $stringPayload = json_encode($payload);
-        $signingKey = $this->GetPrivateKey(SecurityData::$MerchantSigningPrivateKey);
-        $encryptingKey = $this->GetPublicKey(SecurityData::$PacoEncryptionPublicKey);
+        $signingKey = $this->GetPrivateKey(config('app.addons.payment_options.hbl')[env('HBL_ENV')]['merchant_signing_private_key']);
+        $encryptingKey = $this->GetPublicKey(config('app.addons.payment_options.hbl')[env('HBL_ENV')]['paco_encryption_public_key']);
 
         $body = $this->EncryptPayload($stringPayload, $signingKey, $encryptingKey);
 
@@ -72,8 +72,8 @@ class Inquiry extends ActionRequest
         ]);
 
         $token = $response->getBody()->getContents();
-        $decryptingKey = $this->GetPrivateKey(SecurityData::$MerchantDecryptionPrivateKey);
-        $signatureVerificationKey = $this->GetPublicKey(SecurityData::$PacoSigningPublicKey);
+        $decryptingKey = $this->GetPrivateKey(config('app.addons.payment_options.hbl')[env('HBL_ENV')]['merchant_decryption_private_key']);
+        $signatureVerificationKey = $this->GetPublicKey(config('app.addons.payment_options.hbl')[env('HBL_ENV')]['paco_signing_public_key']);
 
         return $this->DecryptToken($token, $decryptingKey, $signatureVerificationKey);
     }

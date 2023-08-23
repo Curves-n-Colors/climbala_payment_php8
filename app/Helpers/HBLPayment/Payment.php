@@ -62,7 +62,7 @@ class Payment extends ActionRequest
                 "interestType" => null
             ],
             "mcpFlag" => "N",
-            "request3dsFlag" => "Y",
+            "request3dsFlag" =>  config('app.addons.payment_options.hbl')[env('HBL_ENV')]['request_3ds_flag'],
             "transactionAmount" => [
                 "amountText" => "{$this->amountText}",
                 "currencyCode" => "{$this->currencyCode}",
@@ -115,8 +115,8 @@ class Payment extends ActionRequest
         ];
 
         $stringPayload = json_encode($payload);
-        $signingKey = $this->GetPrivateKey(SecurityData::$MerchantSigningPrivateKey);
-        $encryptingKey = $this->GetPublicKey(SecurityData::$PacoEncryptionPublicKey);
+        $signingKey = $this->GetPrivateKey(config('app.addons.payment_options.hbl')[env('HBL_ENV')]['merchant_signing_private_key']);
+        $encryptingKey = $this->GetPublicKey(config('app.addons.payment_options.hbl')[env('HBL_ENV')]['paco_encryption_public_key']);
         $body = $this->EncryptPayload($stringPayload, $signingKey, $encryptingKey);
         
         //third-party http client https://github.com/guzzle/guzzle
@@ -129,8 +129,8 @@ class Payment extends ActionRequest
             'body' => $body
         ]);
         $token = $response->getBody()->getContents();
-        $decryptingKey = $this->GetPrivateKey(SecurityData::$MerchantDecryptionPrivateKey);
-        $signatureVerificationKey = $this->GetPublicKey(SecurityData::$PacoSigningPublicKey);
+        $decryptingKey = $this->GetPrivateKey(config('app.addons.payment_options.hbl')[env('HBL_ENV')]['merchant_decryption_private_key']);
+        $signatureVerificationKey = $this->GetPublicKey(config('app.addons.payment_options.hbl')[env('HBL_ENV')]['paco_signing_public_key']);
 
         return $this->DecryptToken($token, $decryptingKey, $signatureVerificationKey);
     }

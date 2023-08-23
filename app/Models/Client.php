@@ -38,7 +38,7 @@ class Client extends Model
 
         if ($model->save()) {
             Logs::_set('Client - "'.$model->name.'" has been created', 'client');
-            return true;
+            return $model;
         }
         return false;
     }

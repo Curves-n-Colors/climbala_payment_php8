@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Controller;
+use App\Models\Client;
 use Illuminate\Http\Request;
 
-use App\Models\Client;
 use App\Http\Requests\ClientStore;
 use App\Http\Requests\ClientUpdate;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class ClientController extends Controller
 {
@@ -28,6 +29,19 @@ class ClientController extends Controller
             return redirect()->route('client.index')->with('success', 'The client has been created.');
         }
         return back()->withInput()->with('error', 'Sorry, could not create client at this time. Please try again later.');
+    }
+
+    public function store_ajax(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name'  => 'required',
+            'email' => 'required|unique:clients,email'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'msg' => $validator->errors()->all()]);
+        }
+        $client = Client::_storing($request);
+        return response()->json(['status' => true, 'msg' => $client->name.' has been created.', 'data'=> $client]);
     }
 
     public function edit($uuid)

@@ -24,6 +24,11 @@ $recurring_types = config('app.addons.recurring_type');
                         <label class="error">{{ $message }}</label>
                     @enderror
                 </div>
+                <div class="row">
+                    <div class="col-12">
+                        <a href="#" class="pull-right" data-target="#myModal" data-toggle="modal">Add Client</a>
+                    </div>
+                </div>
                 <div class="form-group required form-group-default form-group-default-select2 @error('client') has-error @enderror">
                     <label>Client</label>
                     <select name="client" data-init-plugin="select2" class="full-width select-client form-control @error('client') error @enderror" data-placeholder="" required>
@@ -40,7 +45,7 @@ $recurring_types = config('app.addons.recurring_type');
                 <div class="form-group required form-group-default @error('email') has-error @enderror">
                     <label>Email</label>
                     <div class="controls">
-                        <input type="email" class="form-control email-client @error('email') error @enderror" name="email" placeholder="Email" required autocomplete="off" value="{{ old('email') }}">
+                        <input type="email" id="email"class="form-control email-client @error('email') error @enderror" name="email" placeholder="Email" required autocomplete="off" value="{{ old('email') }}">
                         @error('email')
                             <label class="error">{{ $message }}</label>
                         @enderror
@@ -212,3 +217,4 @@ $recurring_types = config('app.addons.recurring_type');
 
 {{-- @include('backend.payment.setup.asset_index') --}}
 @include('backend.payment.setup.asset_form')
+@include('backend.payment.setup.include.add_client')

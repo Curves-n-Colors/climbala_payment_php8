@@ -39,7 +39,6 @@ use Psr\Http\Message\RequestInterface;
 
 abstract class ActionRequest
 {
-    private const PaymentEndpoint = "https://core.paco.2c2p.com/";
 
     protected Client $client;
 
@@ -63,7 +62,7 @@ abstract class ActionRequest
         }));
 
         $this->client = new Client([
-            'base_uri' => self::PaymentEndpoint,
+            'base_uri' => config('app.addons.payment_options.hbl')[env('HBL_ENV')]['payment_endpoint'],
             'handler' => $handler
         ]);
 
@@ -219,7 +218,7 @@ abstract class ActionRequest
             ->withSharedProtectedHeader([
                 "alg" => SecurityData::$JWEAlgorithm,
                 "enc" => SecurityData::$JWEEncrptionAlgorithm,
-                "kid" => SecurityData::$EncryptionKeyId,
+                "kid" => config('app.addons.payment_options.hbl')[env('HBL_ENV')]['encryption_id'],
                 "typ" => SecurityData::$TokenType,
             ])
             ->addRecipient($encryptingKey)

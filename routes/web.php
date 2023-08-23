@@ -41,6 +41,7 @@ Route::namespace('Backend')->middleware('auth')->group(function () {
     Route::get('/clients', 'ClientController@index')->name('client.index');
     Route::get('/client/create', 'ClientController@create')->name('client.create');
     Route::post('/client/store', 'ClientController@store')->name('client.store');
+    Route::post('/client/store/ajax', 'ClientController@store_ajax')->name('client.store.ajax');
     Route::get('/client/{uuid}/edit', 'ClientController@edit')->name('client.edit');
     Route::put('/client/{uuid}/update', 'ClientController@update')->name('client.update');
     Route::put('/client/{uuid}/change-status', 'ClientController@change_status')->name('client.change.status');

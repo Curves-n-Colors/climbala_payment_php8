@@ -68,5 +68,6 @@
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
 
     @include('includes.notify')
+    @stack('scripts')
 </body>
 </html>

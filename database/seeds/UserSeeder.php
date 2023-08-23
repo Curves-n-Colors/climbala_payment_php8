@@ -20,8 +20,8 @@ class UserSeeder extends Seeder
 			'password'			=> '$2y$10$GLc5272vT/VALWDnmG44/umzZciWGHS5z/JOm/7W6o494ZUApR7vC', //123456789
             'master_password'   => '$2y$10$GLc5272vT/VALWDnmG44/umzZciWGHS5z/JOm/7W6o494ZUApR7vC', //123456789
 			'remember_token'	=> NULL,
+            'is_super' => 10,
             'is_active'    => 10,
-            'is_super ' => 10,
 			'created_at'		=> now()->toDateTimeString(),
 			'updated_at'		=> now()->toDateTimeString(),
         ]);
