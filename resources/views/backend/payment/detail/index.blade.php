@@ -100,7 +100,7 @@ $status_payment = config('app.addons.status_payment');
                                                 
                                                 <input type="hidden" data-title="ref_code" value="{{ $row->ref_code }}" class="payment-item">
                                                 {{-- <input type="hidden" data-title="detail_title" value="{{ $row->title }}" class="payment-item"> --}}
-                                                <input type="hidden" data-title="setup_title" value="{{ $row->title }}" class="payment-item">
+                                                <input type="hidden" data-title="setup_title" value="{{ $row->setup->title }}" class="payment-item">
                                                 <input type="hidden" data-title="client" value='{{ $row->client->name }}' class="payment-item">
                                                 <input type="hidden" data-title="email" value='{{ $row->email }}' class="payment-item">
                                                 <input type="hidden" data-title="currency" value="{{ $row->currency }}">

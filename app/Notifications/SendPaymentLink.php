@@ -76,7 +76,7 @@ class SendPaymentLink extends Notification
             'body'      => [
                 'subject'  => 'Payment Due',
                 'greeting' => 'Hello ' . $notify['client'],
-                'message'  => 'Your payment due is ' . $notify['currency'] . ' ' . $notify['total'] . ' for the ' . $notify['entry'],
+                'message'  => 'Your payment due is ' . $notify['currency'] . ' ' . $notify['total'] ,
                 'link'     => route('pay.index', [$notify['encrypt']])
             ]
         ]);
