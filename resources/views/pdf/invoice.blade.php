@@ -31,7 +31,7 @@
 				<thead>
 					<tr>
 						<th style="vertical-align: bottom; border: 1px solid #e9ecef; padding: 15px; text-align: center;">
-							<p>Particular - {{ $data->title }}</p>
+							<p>Particular - {{ $data->setup->title }}</p>
 						</th>
 						<th style="vertical-align: bottom; border: 1px solid #e9ecef; padding: 15px; text-align: center;">
 							<p>Amount</p>

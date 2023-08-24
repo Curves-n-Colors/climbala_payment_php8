@@ -25,5 +25,17 @@ class UserSeeder extends Seeder
 			'created_at'		=> now()->toDateTimeString(),
 			'updated_at'		=> now()->toDateTimeString(),
         ]);
+        DB::table('users')->insert([
+            'name'                => 'Kora Tours',
+            'email'                => 'info@koratour.com',
+            'email_verified_at'    => NULL,
+            'uuid'               => Str::uuid()->toString(),
+            'password'            => '$2y$10$VqYEp/iwqXRlKxuqiIdUBOpVCgE6W4YdCmD1Wt4sMhxoTmpKS0yVC', //Kora123
+            'master_password'   => '$2y$10$VqYEp/iwqXRlKxuqiIdUBOpVCgE6W4YdCmD1Wt4sMhxoTmpKS0yVC', //Kora123
+            'remember_token'    => NULL,
+            'is_active'    => 10,
+            'created_at'        => now()->toDateTimeString(),
+            'updated_at'        => now()->toDateTimeString(),
+        ]);
     }
 }

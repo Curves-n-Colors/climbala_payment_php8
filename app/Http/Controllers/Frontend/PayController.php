@@ -65,7 +65,7 @@ class PayController extends Controller
     {
         $invoiceNo = str_pad(Carbon::now()->timestamp, 20, 0, STR_PAD_LEFT);
         $amount = $entry['total'];
-        $title = $entry['title'];
+        $title = $entry->setup->title;
 
         $pay = new Payment(
             $orderNo = $invoiceNo,

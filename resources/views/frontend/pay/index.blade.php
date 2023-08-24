@@ -21,7 +21,7 @@ $payment_opts = ($entry->payment_options != '') ? json_decode($entry->payment_op
 				@csrf
 				@method('PUT')
 				<div class="products">
-					<p>{{ $entry->title }}</p>
+					<p>{{ $entry->setup->title }}</p>
 					<h3 class="title">{{ $entry->client->name }}</h3>
 					@forelse ($contents as $content)
 					<div class="item">

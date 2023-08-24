@@ -49,7 +49,7 @@ $recurring_types = config('app.addons.recurring_type');
                                 <thead>
                                     <tr>
                                         <th width="15">#</th>
-                                        <th width="50">Entry Title</th>
+                                        {{-- <th width="50">Entry Title</th> --}}
                                         <th width="50">Setup Title</th>
                                         <th width="50">Client</th>
                                         <th width="50">Amount</th>
@@ -65,7 +65,7 @@ $recurring_types = config('app.addons.recurring_type');
                                         @php $i++; @endphp
                                         <tr>
                                             <td>{{ $i }}</td>
-                                            <td>{{ $row->title }}</td>
+                                            {{-- <td>{{ $row->title }}</td> --}}
                                             <td>{{ $row->setup->title }}</td>
                                             <td>{{ $row->client->name }}<br/>{{ $row->email }}</td>
                                             <td>{{ $row->currency . ' ' . number_format($row->total, 2) }}</td>
@@ -90,7 +90,7 @@ $recurring_types = config('app.addons.recurring_type');
                                                 </button>
                                                 <form action="{{ route('payment.entry.change.status', [$row->uuid]) }}" method="POST" class="change-status-form-{{ $i }}" style="display: none;">@csrf @method('PUT')</form>
 
-                                                <input type="hidden" data-title="entry_title" value="{{ $row->title }}" class="payment-item">
+                                                {{-- <input type="hidden" data-title="entry_title" value="{{ $row->title }}" class="payment-item"> --}}
                                                 <input type="hidden" data-title="setup_title" value="{{ $row->setup->title }}" class="payment-item">
                                                 <input type="hidden" data-title="client" value='{{ $row->client->name }}' class="payment-item">
                                                 <input type="hidden" data-title="email" value='{{ $row->email }}' class="payment-item">

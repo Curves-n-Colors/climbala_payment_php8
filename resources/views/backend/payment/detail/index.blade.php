@@ -51,7 +51,7 @@ $status_payment = config('app.addons.status_payment');
                                     <tr>
                                         <th width="15">#</th>
                                         <th width="50">Ref Code</th>
-                                        <th width="50">Detail Title</th>
+                                        {{-- <th width="50">Detail Title</th> --}}
                                         <th width="50">Setup Title</th>
                                         <th width="50">Client</th>
                                         <th width="50">Amount</th>
@@ -69,7 +69,7 @@ $status_payment = config('app.addons.status_payment');
                                         <tr>
                                             <td>{{ $i }}</td>
                                             <td>{{ $row->ref_code }}</td>
-                                            <td>{{ $row->title }}</td>
+                                            {{-- <td>{{ $row->title }}</td> --}}
                                             <td>{{ $row->setup->title }}</td>
                                             <td>{{ $row->client->name }}<br/>{{ $row->email }}</td>
                                             <td>{{ $row->currency . ' ' . number_format($row->total, 2) }}</td>
@@ -99,7 +99,7 @@ $status_payment = config('app.addons.status_payment');
                                                 @endif
                                                 
                                                 <input type="hidden" data-title="ref_code" value="{{ $row->ref_code }}" class="payment-item">
-                                                <input type="hidden" data-title="detail_title" value="{{ $row->title }}" class="payment-item">
+                                                {{-- <input type="hidden" data-title="detail_title" value="{{ $row->title }}" class="payment-item"> --}}
                                                 <input type="hidden" data-title="setup_title" value="{{ $row->title }}" class="payment-item">
                                                 <input type="hidden" data-title="client" value='{{ $row->client->name }}' class="payment-item">
                                                 <input type="hidden" data-title="email" value='{{ $row->email }}' class="payment-item">
