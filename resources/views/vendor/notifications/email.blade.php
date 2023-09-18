@@ -44,13 +44,12 @@
 {{ $salutation }}
 @else
 @lang('Regards'),<br>
-    @if (auth()->check())
-    {{ auth()->user()->name }},<br>
-    {{ config('app.name') }}
-    @else
-    {{ config('app.name') }}<br><br>
+    {{ config('app.name') }}<br>
+    {{ ENV("CONTACT_NUMBER") }}<br>
+    {{ ENV('PRIMARY_MAIL') }}<br>
+    {{ ENV('COMPANY_NAME') }}<br>
+    {{ ENV('COMPANY_ADDRESS') }}<br>
     <small><i>This is a system generated email.</i></small>
-    @endif
 @endif
 
 {{-- Subcopy --}}

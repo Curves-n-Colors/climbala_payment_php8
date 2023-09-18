@@ -9,6 +9,7 @@ use App\Notifications\SendPaymentStatus;
 use App\Models\Logs;
 use App\Models\PayNibl;
 
+use App\Notifications\SendPaymentStatusAdmin;
 use PDF;
 
 class PaymentDetail extends Model
@@ -59,6 +60,7 @@ class PaymentDetail extends Model
             $model->update();
 
             Notification::route('mail', $model->email)->notify(new SendPaymentStatus($model));
+            Notification::route('mail', env('PRIMARY_MAIL'))->notify(new SendPaymentStatusAdmin($model));
             Logs::_set('Payment Detail - ' . $model->title . ' has been created for Setup - ' . $data->setup->title, 'payment-detail');
             return true;
         }

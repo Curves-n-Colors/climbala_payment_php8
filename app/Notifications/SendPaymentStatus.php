@@ -56,19 +56,19 @@ class SendPaymentStatus extends Notification
                         ->subject('Payment Success')
                         ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
                         ->greeting('Hello ' . $this->detail->client->name . ',')
-                        ->line('Your payment of ' . $this->detail->currency . ' ' . number_format($this->detail->total, 2) . ' for the ' . $this->detail->title . ' have been completed successfully.')
+                        ->line('Your payment of ' . $this->detail->currency . ' ' . number_format($this->detail->total, 2) . ' for the ' . $this->detail->setup->title . ' have been completed successfully.')
                         ->line('Referene Code #' . $this->detail->ref_code)
-                        ->line('Thank you for making the payment timely.')
-                        ->attachData($pdf->output(), 'invoice.pdf', [
-                            'mime' => 'application/pdf',
-                        ]);
+                        ->line('Thank you for making the payment timely.');
+                        // ->attachData($pdf->output(), 'invoice.pdf', [
+                        //     'mime' => 'application/pdf',
+                        // ]);
         }
         else if ($this->detail->payment_status == config('app.addons.status_payment.REFUNDED')) {
             return (new MailMessage)
                         ->subject('Payment Refund')
                         ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
                         ->greeting('Hello ' . $this->detail->client->name . ',')
-                        ->line('Your payment of ' . $this->detail->currency . ' ' . number_format($this->detail->total, 2) . ' for the ' . $this->detail->title . ' have been refunded.')
+                        ->line('Your payment of ' . $this->detail->currency . ' ' . number_format($this->detail->total, 2) . ' for the ' . $this->detail->setup->title . ' have been refunded.')
                         ->line('Referene Code #' . $this->detail->ref_code)
                         ->line('Thank you for doing business with us.');
         }
@@ -77,7 +77,7 @@ class SendPaymentStatus extends Notification
                         ->subject('Payment Cancelled')
                         ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
                         ->greeting('Hello ' . $this->detail->client->name . ',')
-                        ->line('Your payment of ' . $this->detail->currency . ' ' . number_format($this->detail->total, 2) . ' for the ' . $this->detail->title . ' have been cancelled from the payment gateway server.')
+                        ->line('Your payment of ' . $this->detail->currency . ' ' . number_format($this->detail->total, 2) . ' for the ' . $this->detail->setup->title . ' have been cancelled from the payment gateway server.')
                         ->line('Referene Code #' . $this->detail->ref_code)
                         ->line('Please forward this email to our admin teamn at ' . env('PRIMARY_MAIL'))
                         ->line('Our Admin Team will contact you back with further details')
