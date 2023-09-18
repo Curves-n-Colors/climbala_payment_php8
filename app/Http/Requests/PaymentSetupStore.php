@@ -24,7 +24,7 @@ class PaymentSetupStore extends FormRequest
     public function rules()
     {
         return [
-            'title'    => 'required|unique:payment_setups,title',
+            'title'    => 'required',
             'client'   => 'required',
             'email'    => 'required',
             'contents' => 'required',

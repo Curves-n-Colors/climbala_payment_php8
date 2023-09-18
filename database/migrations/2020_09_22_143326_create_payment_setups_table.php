@@ -15,7 +15,7 @@ class CreatePaymentSetupsTable extends Migration
     {
         Schema::create('payment_setups', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 100)->unique();
+            $table->string('title', 100);
             $table->integer('user_id')->unsigned();
             $table->integer('client_id')->unsigned();
             $table->string('email');
