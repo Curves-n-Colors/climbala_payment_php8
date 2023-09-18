@@ -277,13 +277,13 @@ class PaymentSetup extends Model
 
     public static function _encrypting($setup_uuid, $entry_uuid)
     {
-        return encrypt(config('app.addons.public_key') . '__' . $setup_uuid . '__' . $entry_uuid);
+        return base64_encode(config('app.addons.public_key') . '__' . $setup_uuid . '__' . $entry_uuid);
     }
 
     public static function _decrypting($encrypt)
     {
         try {
-            return explode('__', decrypt($encrypt));
+            return explode('__', base64_decode($encrypt));
         } catch (DecryptException $e) {
             abort(401);
         }

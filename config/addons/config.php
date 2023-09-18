@@ -2,7 +2,7 @@
 
 return [
 
-	'public_key'  => 'MDwjgtVspt58haKebsV7mNvAQIMRwnN3',
+	'public_key'  => 'V6FGnvE7',
 
 	'private_key' => 'ySgpzBm4kIwExaCfIAgt7gHwwiqEWBk0ipCgEpXIgZosQV6ik0',
 
